@@ -17,7 +17,7 @@ def get_train():
           auth = HTTPBasicAuth(USERNAME, PASSWORD)
         
           # Make a GET request to the authenticated endpoint
-          response = requests.get('https://api.rtt.io/api/v1//json/search/DRM/2023/10/19/1206', auth=auth)
+          response = requests.get('https://api.rtt.io/api/v1//json/search/DRM', auth=auth)
 
           # Check for HTTP errors
           response.raise_for_status()
