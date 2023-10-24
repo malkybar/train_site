@@ -1,23 +1,23 @@
-from  flask import Flask, request, jsonify
+from  flask import Flask, request, jsonify, render_template
 import requests
 from requests.auth import HTTPBasicAuth
 
 app = Flask(__name__)
 
-@app.route("/")
-def hello():
-     return "hello world"
-
 USERNAME = 'rttapi_malcybar'
 PASSWORD = '88128c2486220ad3b31c9d5e3d61a6d08a2bc0db'
 
-@app.route("/train")
-def get_train():
+@app.route("/")
+def home():
+     return render_template('home.html')
+
+@app.route("/live_times/<station>")
+def get_train(station):
      try:
           auth = HTTPBasicAuth(USERNAME, PASSWORD)
         
           # Make a GET request to the authenticated endpoint
-          response = requests.get('https://api.rtt.io/api/v1//json/search/DRM', auth=auth)
+          response = requests.get('https://api.rtt.io/api/v1//json/search/' + station , auth=auth)
 
           # Check for HTTP errors
           response.raise_for_status()
