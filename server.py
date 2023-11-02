@@ -27,6 +27,11 @@ def get_train(station):
      
      except requests.exceptions.RequestException as e:
           return jsonify({"error": str(e)}), 500  # Internal Server Error
+     
+
+@app.route("/bootstrapTest")
+def route():
+     return render_template("bootstrapTest.html"), 200
 
 if __name__ == "__main__":
      app.run(host='0.0.0.0', debug=True)
