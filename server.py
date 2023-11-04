@@ -28,9 +28,13 @@ def get_train(station):
      except requests.exceptions.RequestException as e:
           return jsonify({"error": str(e)}), 500  # Internal Server Error
      
+@app.route("/live_times")
+def live():
+     return render_template("live_times.html"), 200
+     
 
 @app.route("/saved_stations")
-def route():
+def saved():
      return render_template("saved_stations.html"), 200
 
 if __name__ == "__main__":
