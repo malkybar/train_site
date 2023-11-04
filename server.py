@@ -9,7 +9,7 @@ PASSWORD = '88128c2486220ad3b31c9d5e3d61a6d08a2bc0db'
 
 @app.route("/")
 def home():
-     return render_template('home.html')
+     return render_template('home.html'), 200
 
 @app.route("/live_times/<station>")
 def get_train(station):
@@ -29,9 +29,9 @@ def get_train(station):
           return jsonify({"error": str(e)}), 500  # Internal Server Error
      
 
-@app.route("/bootstrapTest")
+@app.route("/saved_stations")
 def route():
-     return render_template("bootstrapTest.html"), 200
+     return render_template("saved_stations.html"), 200
 
 if __name__ == "__main__":
      app.run(host='0.0.0.0', debug=True)
