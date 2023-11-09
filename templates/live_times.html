@@ -7,7 +7,7 @@
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
 </head>
 
-<body>
+<body style="background-color: #002664ff;">
 <img src="static/img/scotfail.jpeg" width="200" height="100">
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
@@ -22,5 +22,68 @@
             </ul>
         </div>
     </nav>
+
+    <div class="container" style="background-color: white;">
+        <ul class="nav nav-tabs nav-justified">
+            <li class="active"><a data-toggle="tab" href="#depart_tab"><h1>Departures</h1></a></li>
+            <li><a data-toggle="tab" href="#arrival_tab"><h1>Arrivals</h1></a></li>
+        </ul>
+        
+        <div class="tab-content">
+            <div id="depart_tab" class="tab-pane fade in active">
+                    
+                    <h2>Departures</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>Depart From</h3>
+                            <input type="text" class="form-control" id="dep_from">
+                        </div>
+                        <div class="col-sm-6">
+                            <h3>Calling At (Optional)</h3>
+                            <input type="text" class="form-control" id="call_at">
+                        </div>
+                    </div>
+
+                    <div class="row" >
+                        <div class="col text-center col-sm-12">
+                            <button class="btn btn-primary btn-lg" onclick="openLink()">Search Departures</button>
+                        </div>
+                    </div>
+            </div>
+
+            <div id="arrival_tab" class="tab-pane fade">
+                <h2>Arrivals</h2>
+                <div class="pull-left">
+                    <h3>Arriving At</h3>
+                    <input type="text" class="form-control" id="usr">
+                </div>
+                <div class="pull-right">
+                    <h3>Arriving From (Optional)</h3>
+                    <input type="text" class="form-control" id="usr">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <script>
+        function openLink() {
+            var dep = document.getElementById("dep_from").value;
+            url = '/results/' + dep;
+            
+            // Use window.open to open the URL in a new window/tab.
+            if (url) {
+                window.open(url, '_blank');
+                output.textContent = "Opening URL: " + url;
+            } else {
+                output.textContent = "Please enter a valid URL.";
+            }
+        }
+    </script>
+
+
 </body>
 </html>
