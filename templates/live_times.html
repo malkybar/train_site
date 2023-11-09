@@ -4,7 +4,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ScotFail</title>
-    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    
+    <!-- Select2 CSS and JS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
 </head>
 
 <body style="background-color: #002664ff;">
@@ -37,7 +48,11 @@
                     <div class="row">
                         <div class="col-md-6">
                             <h3>Depart From</h3>
-                            <input type="text" class="form-control" id="dep_from">
+                            <select class="form-control selectpicker" id="dep_from">
+                                <option>DRM</option>
+                                <option>EDB</option>
+                                <option>GLC</option>
+                            </select>
                         </div>
                         <div class="col-sm-6">
                             <h3>Calling At (Optional)</h3>
@@ -66,8 +81,6 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <script>
         function openLink() {
@@ -82,6 +95,11 @@
                 output.textContent = "Please enter a valid URL.";
             }
         }
+
+        $(document).ready(function() {
+            // Initialize Select2 for the dropdown
+            $('#dep_from').select2();
+        });
     </script>
 
 

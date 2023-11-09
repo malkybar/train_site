@@ -28,6 +28,10 @@ def results(station, methods=['GET']):
      
 @app.route("/live_times")
 def live():
+     f = open('stations.json')
+     data = json.load(f)
+     
+     f.close()
      return render_template("live_times.html"), 200
      
 
