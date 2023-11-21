@@ -1,50 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ScotFail</title>
-    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 
-<body style="background-color: #002664ff;">
-    <img src="static/img/scotfail.jpeg" width="200" height="100">
+<body style="background-color: white;">
 
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #002664ff;">
         <div class="container-fluid">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                <li><a href="live_times">Live Times</a></li>
-                <li><a href="saved_stations">Saved Stations</a></li>
+          <a class="navbar-brand" href="/"><img src="/static/img/scotfail.jpeg" width="200" height="100"></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/" style="color: white;">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/live_times/" style="color: white;">Live Times</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/saved_stations" style="color: white;">Saved Stations</a>
+                </li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            <ul class="navbar-nav ms-auto">  
+                <li class="nav-item">
+                    <a class="nav-link" href="#" style="color: white;">Sign Up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" style="color: white;">Login</a>
+                </li>
             </ul>
+          </div>
         </div>
     </nav>
 
-    <div class="container">
-        <table class="table table-bordered"  style="background-color: white;">
+    <div class="container mt-5">
+        <h2 style="color: #002664ff;">Popular Stations</h2>
+        <table class="table table-bordered table-color">
             <tbody>
                 <tr>
-                    <td><a href="#">Glasgow Central</a></td>
-                    <td><a href="#">Edinburgh Waverley</a></td>
+                    <td><a href="/live_times/results/GLC/to/BLANK" class="btn btn-outline-primary">Glasgow Central</a></td>
+                    <td><a href="/live_times/results/EDB/to/BLANK" class="btn btn-outline-primary">Edinburgh Waverley</a></td>
                 </tr>
                 <tr>
-                    <td><a href="#">Glasgow Queen Street</a></td>
-                    <td><a href="#">Haymarket</a></td>
+                    <td><a href="/live_times/results/GLQ/to/BLANK" class="btn btn-outline-primary">Glasgow Queen Street</a></td>
+                    <td><a href="/live_times/results/HYM/to/BLANK" class="btn btn-outline-primary">Haymarket</a></td>
                 </tr>
                 <tr>
-                    <td><a href="#">Paisley Gilmour Street</a></td>
-                    <td><a href="#">Aberdeen</a></td>
+                    <td><a href="/live_times/results/PYG/to/BLANK" class="btn btn-outline-primary">Paisley Gilmour Street</a></td>
+                    <td><a href="/live_times/results/ABD/to/BLANK" class="btn btn-outline-primary">Aberdeen</a></td>
                 </tr>
                 <tr>
-                    <td><a href="#">Dundee</a></td>
-                    <td><a href="#">Stirling</a></td>
+                    <td><a href="/live_times/results/DEE/to/BLANK" class="btn btn-outline-primary">Dundee</a></td>
+                    <td><a href="/live_times/results/STG/to/BLANK" class="btn btn-outline-primary">Stirling</a></td>
                 </tr>
             </tbody>
         </table>
       </div>
+
+
+    <!-- Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

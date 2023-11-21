@@ -1,105 +1,153 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ScotFail</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    
-    <!-- Bootstrap JS -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    
-    <!-- Select2 CSS and JS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 
-<body style="background-color: #002664ff;">
-<img src="static/img/scotfail.jpeg" width="200" height="100">
-    <nav class="navbar navbar-inverse">
+<body style="background-color: white;">
+
+    <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #002664ff;">
         <div class="container-fluid">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                <li><a href="live_times">Live Times</a></li>
-                <li><a href="saved_stations">Saved Stations</a></li>
+          <a class="navbar-brand" href="/"><img src="/static/img/scotfail.jpeg" width="200" height="100"></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/" style="color: white;">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/live_times/" style="color: white;">Live Times</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/saved_stations" style="color: white;">Saved Stations</a>
+                </li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            <ul class="navbar-nav ms-auto">  
+                <li class="nav-item">
+                    <a class="nav-link" href="#" style="color: white;">Sign Up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" style="color: white;">Login</a>
+                </li>
             </ul>
+          </div>
         </div>
     </nav>
 
-    <div class="container" style="background-color: white;">
-        <ul class="nav nav-tabs nav-justified">
-            <li class="active"><a data-toggle="tab" href="#depart_tab"><h1>Departures</h1></a></li>
-            <li><a data-toggle="tab" href="#arrival_tab"><h1>Arrivals</h1></a></li>
+    <div class="container mt-5" style="background-color: white;">
+        <ul class="nav nav-tabs"  id="tabs">
+            <li class="nav-item col-md-6">
+                <a class="nav-link active" data-bs-toggle="tab" href="#depart_tab"><h1>Departures</h1></a>
+            </li>
+            <li class="nav-item col-md-6">
+                <a class="nav-link" data-bs-toggle="tab" href="#arrival_tab"><h1>Arrivals</h1></a>
+            </li>
         </ul>
         
-        <div class="tab-content">
-            <div id="depart_tab" class="tab-pane fade in active">
+        <div class="tab-content mt-2">
+            <div id="depart_tab" class="tab-pane fade show active">
                     
-                    <h2>Departures</h2>
+                <h2>Departures</h2>
                     
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h3>Depart From</h3>
-                            <select class="form-control selectpicker" id="dep_from">
-                                <option>DRM</option>
-                                <option>EDB</option>
-                                <option>GLC</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-6">
-                            <h3>Calling At (Optional)</h3>
-                            <input type="text" class="form-control" id="call_at">
-                        </div>
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <h3>Depart From:</h3>
+                        <select id="dep_station" class="js-example-basic-single">
+                            {% for station in data.stations %}
+                                <option value="{{ station.crsCode }}">{{ station.stationName }} {{ station.crsCode }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
 
-                    <div class="row" >
-                        <div class="col text-center col-sm-12">
-                            <button class="btn btn-primary btn-lg" onclick="openLink()">Search Departures</button>
-                        </div>
+                    <div class="col-sm-6">
+                        <h3>Calling At (Optional):</h3>
+                        <select id="call_at" class="js-example-basic-single">
+                            <option value="BLANK">BLANK</option>
+                            {% for station in data.stations %}
+                                <option value="{{ station.crsCode }}">{{ station.stationName }} {{ station.crsCode }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
+                </div>
+
+                <div class="row" >
+                    <div class="col text-center col-sm-12 mt-3 mb-3">
+                    <button class="btn btn-primary btn-lg" id="dep_button">Search Departures</button>
+                    </div>
+                </div>
             </div>
 
             <div id="arrival_tab" class="tab-pane fade">
                 <h2>Arrivals</h2>
-                <div class="pull-left">
-                    <h3>Arriving At</h3>
-                    <input type="text" class="form-control" id="usr">
+
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <h3>Arrive At:</h3>
+                        <select id="arr_station" class="js-example-basic-single">
+                            {% for station in data.stations %}
+                                <option value="{{ station.crsCode }}">{{ station.stationName }} {{ station.crsCode }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <h3>Arriving From (Optional):</h3>
+                        <select id="arr_from" class="js-example-basic-single">
+                            <option value="BLANK">BLANK</option>
+                            {% for station in data.stations %}
+                                <option value="{{ station.crsCode }}">{{ station.stationName }} {{ station.crsCode }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
-                <div class="pull-right">
-                    <h3>Arriving From (Optional)</h3>
-                    <input type="text" class="form-control" id="usr">
+
+                <div class="row" >
+                    <div class="col text-center col-sm-12 mt-3 mb-3">
+                        <button class="btn btn-primary btn-lg" id="arr_button">Search Arrivals</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
 
-    <script>
-        function openLink() {
-            var dep = document.getElementById("dep_from").value;
-            url = '/results/' + dep;
-            
-            // Use window.open to open the URL in a new window/tab.
-            if (url) {
-                window.open(url, '_blank');
-                output.textContent = "Opening URL: " + url;
-            } else {
-                output.textContent = "Please enter a valid URL.";
-            }
-        }
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
 
+
+    <script>
         $(document).ready(function() {
-            // Initialize Select2 for the dropdown
-            $('#dep_from').select2();
+            // Initialize Select2
+            $('.js-example-basic-single').select2();
         });
+
+        $('#dep_button').on('click', function (){
+            var dep = document.getElementById("dep_station");
+            var call = document.getElementById("call_at");
+            var dep_code = dep.value;
+            var call_code = call.value;
+
+            var url = "results/" + dep_code + "/to/" + call_code;
+            window.open(url, '_self');
+        })
+
+        $('#arr_button').on('click', function (){
+            var arr = document.getElementById("arr_station");
+            var from = document.getElementById("arr_from");
+            var arr_code = arr.value;
+            var from_code = from.value;
+
+            var url = "results/" + arr_code + "/from/" + from_code;
+            window.open(url, '_self');
+        })
     </script>
 
 
