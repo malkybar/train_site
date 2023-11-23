@@ -12,19 +12,33 @@ PASSWORD = '88128c2486220ad3b31c9d5e3d61a6d08a2bc0db'
 def home():
      return render_template('home.html'), 200
 
-@app.route('/live_times/results/<station1>/<query>/<station2>')
-def dep_results(station1, query, station2, methods=['GET']):
+@app.route('/live_times/departures/<station1>/to/<station2>')
+def depart(station1, station2, methods=['GET']):
      json_data = None
      error_message = None
 
      try:
-          if station2 == 'BLANK' and query == 'to':
+          if station2 == 'BLANK':
                response = requests.get('https://api.rtt.io/api/v1/json/search/' + station1, auth=(USERNAME, PASSWORD))
-          elif query == 'to':
+          else:
                response = requests.get('https://api.rtt.io/api/v1/json/search/' + station1 + '/to/' + station2, auth=(USERNAME, PASSWORD))
-          elif station2 == 'BLANK' and query == 'from':
+          
+          response.raise_for_status()
+          data = response.json()
+     except requests.exceptions.RequestException as e:
+          error_message = str(e)
+
+     return render_template('departures.html', data=data), 200
+
+@app.route('/live_times/arrivals/<station1>/from/<station2>')
+def arrive(station1, station2, methods=['GET']):
+     json_data = None
+     error_message = None
+
+     try:
+          if station2 == 'BLANK':
                response = requests.get('https://api.rtt.io/api/v1/json/search/' + station1 + '/arrivals', auth=(USERNAME, PASSWORD))
-          elif query == 'from':
+          else:
                response = requests.get('https://api.rtt.io/api/v1/json/search/' + station1 + '/from/' + station2 + '/arrivals', auth=(USERNAME, PASSWORD))
           
           response.raise_for_status()
@@ -32,7 +46,7 @@ def dep_results(station1, query, station2, methods=['GET']):
      except requests.exceptions.RequestException as e:
           error_message = str(e)
 
-     return render_template('results.html', data=data), 200
+     return render_template('arrivals.html', data=data), 200
      
 @app.route("/live_times/")
 def live():

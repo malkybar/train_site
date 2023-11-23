@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ScotFail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #002664ff;">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/"><img src="/static/img/scotfail.jpeg" width="200" height="100"></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/" style="color: white;">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/live_times/" style="color: white;">Live Times</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/saved_stations" style="color: white;">Saved Stations</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">  
+                <li class="nav-item">
+                    <a class="nav-link" href="#" style="color: white;">Sign Up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" style="color: white;">Login</a>
+                </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Origin</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Platform</th>
+                <th>Operator</th>
+                <th>Service Type</th>
+            </tr>
+            </thead>
+            <tbody id="servicesTableBody">
+            <!-- Table rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <script>
+        const jsonData = {{ data | tojson | safe }};
+        
+        const servicesTableBody = document.getElementById('servicesTableBody');
+
+        jsonData.services.forEach(service => {
+            const row = document.createElement('tr');
+
+            const originCell = document.createElement('td');
+            originCell.textContent = service.locationDetail.origin[0].description;
+            row.appendChild(originCell);
+
+            const locationCell = document.createElement('td');
+            locationCell.textContent = service.locationDetail.description;
+            row.appendChild(locationCell);
+
+            const dateCell = document.createElement('td');
+            dateCell.textContent = service.runDate;
+            row.appendChild(dateCell);
+
+            const timeCell = document.createElement('td');
+            timeCell.textContent = service.locationDetail.gbttBookedArrival;
+            row.appendChild(timeCell);
+
+            const statusCell = document.createElement('td');
+            if (service.locationDetail.displayAs === 'CANCELLED_CALL') {
+                statusCell.textContent = 'CANCELLED';
+            } else if (
+                service.locationDetail.realtimeArrival &&
+                service.locationDetail.gbttBookedArrival &&
+                service.locationDetail.realtimeArrival === service.locationDetail.gbttBookedArrival
+            ) {
+                statusCell.textContent = 'ON TIME';
+            } else {
+                statusCell.textContent = 'EXPECTED : ' + service.locationDetail.realtimeArrival;
+            }
+            row.appendChild(statusCell);  
+
+            const platformCell = document.createElement('td');
+            if (service.locationDetail.platform) {
+                platformCell.textContent = service.locationDetail.platform;
+            } else {
+                platformCell.textContent = '-';
+            }
+            row.appendChild(platformCell);
+
+            const operatorCell = document.createElement('td');
+            operatorCell.textContent = service.atocName;
+            row.appendChild(operatorCell);
+
+            const serviceTypeCell = document.createElement('td');
+            serviceTypeCell.textContent = service.serviceType;
+            row.appendChild(serviceTypeCell);
+        
+
+            servicesTableBody.appendChild(row);
+        });
+    </script>
+</body>
+</html>
