@@ -1,5 +1,5 @@
-from  flask import Flask, request, render_template, g, redirect, url_for, session
-import requests, json, sqlite3, secrets
+from flask import Flask, request, render_template, g, redirect, session, jsonify
+import requests, json, sqlite3, secrets, re
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
@@ -27,6 +27,20 @@ def init_db():
           with app.open_resource('var/schema.sql', mode='r') as f:
                db.cursor().executescript(f.read())
           db.commit()
+          
+def validate_email(email):
+    pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    return bool(re.match(pattern, email))
+
+def validate_password(password):
+    if len(password) >= 8:
+        return True
+    return False
+
+def validate_username(username):
+    if len(username) >= 1:
+        return True
+    return False
 
 @app.route("/")
 def home():
@@ -36,6 +50,9 @@ def home():
 def depart(station1, station2, methods=['GET']):
      json_data = None
      error_message = None
+     f = open('stations.json')
+     stationdata = json.load(f)
+     f.close()
 
      try:
           if station2 == 'BLANK':
@@ -48,12 +65,15 @@ def depart(station1, station2, methods=['GET']):
      except requests.exceptions.RequestException as e:
           error_message = str(e)
 
-     return render_template('departures.html', data=data), 200
+     return render_template('departures.html', data=data, station1=station1, station2=station2, stationdata=stationdata), 200
 
 @app.route('/live_times/arrivals/<station1>/from/<station2>')
 def arrive(station1, station2, methods=['GET']):
      json_data = None
      error_message = None
+     f = open('stations.json')
+     stationdata = json.load(f)
+     f.close()
 
      try:
           if station2 == 'BLANK':
@@ -66,7 +86,7 @@ def arrive(station1, station2, methods=['GET']):
      except requests.exceptions.RequestException as e:
           error_message = str(e)
 
-     return render_template('arrivals.html', data=data), 200
+     return render_template('arrivals.html', data=data, station1=station1, station2=station2, stationdata=stationdata), 200
      
 @app.route("/live_times/")
 def live():
@@ -77,71 +97,147 @@ def live():
      return render_template('live_times.html', data=data), 200
      
 
-@app.route("/saved_stations")
-def saved():
-     return render_template("saved_stations.html"), 200
-
-@app.route("/account")
-def account():
-     return render_template("account.html"), 200
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-          username = request.form['username']
-          password = request.form['password']
-          email = request.form['email']
-          
-          conn = get_db()
-          cursor = conn.cursor()
+     error = ""
+     if request.method == 'POST':
+               username = request.form['username']
+               password = request.form['password']
+               email = request.form['email']
+               
+               conn = get_db()
+               cursor = conn.cursor()
 
-          cursor.execute("SELECT * FROM users WHERE username=?", (username,))
-          existing_user = cursor.fetchone()
+               cursor.execute("SELECT * FROM users WHERE username=?", (username,))
+               existing_user = cursor.fetchone()
 
-          if existing_user:
-               conn.close()
-               return "Username already exists! Please choose a different one."
-          else:
-               cursor.execute("INSERT INTO users (username, password, email) VALUES (?, ?, ?)", (username, password, email))
-               conn.commit()
-               conn.close()
-               return redirect('/login')
+               if existing_user and validate_email(email) == False and validate_password(password) == False:
+                    conn.close()
+                    error = "Username already exists! Please choose a different one.\nInvalid Password and Email Address"
+                    return render_template("register.html", error=error)
+               
+               elif existing_user and validate_password(password) == False:
+                    error = "Username already exists! Please choose a different one.\nInvalid Password"
+                    return render_template("register.html", error=error)
+               
+               elif existing_user and validate_email(email) == False:
+                    error = "Username already exists! Please choose a different one.\nInvalid Email"
+                    return render_template("register.html", error=error)
+               
+               elif validate_email(email) == False and validate_password(password) == False:
+                    error = "Invalid Password and Email Address"
+                    return render_template("register.html", error=error)
+               
+               elif existing_user:
+                    conn.close()
+                    error = "Username already exists! Please choose a different one."
+                    return render_template("register.html", error=error)
+               
+               elif validate_password(password) == False:
+                    error = "Invalid Password"
+                    return render_template("register.html", error=error)
+               
+               elif validate_email(email) == False:
+                    error = "Invalid Email Address"
+                    return render_template("register.html", error=error)
+               
+               else:
+                    cursor.execute("INSERT INTO users (username, password, email) VALUES (?, ?, ?)", (username, password, email))
+                    conn.commit()
+                    conn.close()
+                    return redirect('/login')
 
-    return render_template('register.html')
+     return render_template('register.html', error=error)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+     error = ""
+     if request.method == 'POST':
+          username = request.form['username']
+          password = request.form['password']
 
-        conn = get_db()
-        cursor = conn.cursor()
+          conn = get_db()
+          cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
-        user = cursor.fetchone()
+          cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
+          user = cursor.fetchone()
 
-        if user:
-            session['username'] = username  # Store username in session
-            conn.close()
-            return redirect('/dashboard')
-        else:
-            conn.close()
-            return "Invalid username or password. Please try again."
+          if user:
+               session['username'] = username
+               conn.close()
+               return redirect('/account')
+          else:
+               conn.close()
+               error = "Invalid Username or Password"
+               return render_template("login.html", error=error)
 
-    return render_template('login.html')
+     return render_template('login.html')
 
-@app.route('/dashboard')
+@app.route('/account')
 def dashboard():
-    if 'username' in session:
-        return f"Welcome, {session['username']}! This is your dashboard."
-    else:
-        return redirect('/login')
+     if 'username' in session:
+          return render_template('account.html', username=session.get('username'))
+     else:
+          return redirect('/login')
    
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
-    return redirect('/')
+     session.pop('username', None)
+     return redirect('/')
+
+@app.route('/update_database', methods=['POST'])
+def update_database():
+     try:
+          username = session.get('username')
+
+          if username:
+               data = request.json
+               if all(key in data for key in ['key1', 'key2', 'key3', 'key4', 'key5']):  # Validate keys in the received JSON
+                    conn = get_db()
+                    cursor = conn.cursor()
+
+                    cursor.execute("SELECT id FROM users WHERE username = ?", (username,))
+                    user = cursor.fetchone()
+
+                    if user:
+                         user_id = user[0]
+                         cursor.execute("INSERT INTO saves (crs_1, station_1, crs_2, station_2, dep_arr, user_id) VALUES (?, ?, ?, ?, ?, ?)",
+                                        (data['key1'], data['key2'], data['key3'], data['key4'], data['key5'], user_id))
+                         conn.commit()
+                         conn.close()
+                         return redirect('/saved_stations')
+                    else:
+                         conn.close()
+                         return 'User not found'
+               else:
+                    return 'Invalid data received'  # Handle invalid or missing keys in received JSON
+          else:
+               return redirect('/login')
+     except Exception as e:
+          return f"An error occurred: {str(e)}"
+
+@app.route("/saved_stations")
+def saved():
+     try:
+          username = session.get('username')  # Get the username from the session
+
+          if username:
+               conn = get_db()  # Replace with your database connection details
+               cursor = conn.cursor()
+
+               # Fetch data for the specific user from the database
+               cursor.execute("SELECT * FROM saves WHERE user_id = (SELECT id FROM users WHERE username = ?)",(username,))
+               data = cursor.fetchall()
+
+               conn.close()
+
+               # Render an HTML page with the fetched data
+               return render_template('saved_stations.html', data=data)
+          else:
+               return redirect('/login')
+     except Exception as e:
+          return f"An error occurred: {str(e)}"
+
 
 if __name__ == "__main__":
      app.run(host='0.0.0.0', debug=True)

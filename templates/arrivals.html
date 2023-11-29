@@ -8,7 +8,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
-<body>
+<body style="background-color: white;">
     <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #002664ff;">
         <div class="container-fluid">
           <a class="navbar-brand" href="/"><img src="/static/img/scotfail.jpeg" width="200" height="100"></a>
@@ -36,7 +36,7 @@
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container mt-2">
         <table class="table table-bordered table-striped">
             <thead>
             <tr>
@@ -56,6 +56,10 @@
         </table>
     </div>
 
+
+    <div class="container">
+        <button class="btn btn-primary btn-lg col-md-12 mb-5" id="save">Save Search</button>
+    </div>
 
     <!-- Latest compiled and minified CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -121,6 +125,45 @@
 
             servicesTableBody.appendChild(row);
         });
+
+        document.getElementById("save").addEventListener("click", function() {
+            var crs_1 = {{ station1 | tojson | safe }};
+            var crs_2 = {{ station2 | tojson | safe}};
+            var dep_arr = "arrival";
+
+            const stationData = {{ stationdata | tojson | safe}};
+            station_1 = findStationName(stationData, crs_1);
+            station_2 = findStationName(stationData, crs_2);
+
+            var SQLdata = {
+                key1: crs_1,
+                key2: station_1,
+                key3: crs_2,
+                key4: station_2,
+                key5: dep_arr
+            };
+
+            fetch('/update_database', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(SQLdata)
+            })
+            .then(response => {
+                // Handle the response if needed
+            })
+            .catch(error => {
+                // Handle errors
+            });
+
+            window.open('/saved_stations', '_self');
+        })
+
+        function findStationName(stationData, code) {
+            const station = stationData.stations.find(station => station.crsCode === code);
+            return station ? station.stationName : "Station Not Found";
+        }
     </script>
 </body>
 </html>
