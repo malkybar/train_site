@@ -39,6 +39,7 @@
         </div>
     </nav>
 
+    <!-- table of arrivals data -->
     <div class="container mt-2">
         <table class="table table-bordered table-striped">
             <thead>
@@ -54,7 +55,6 @@
             </tr>
             </thead>
             <tbody id="servicesTableBody">
-            <!-- Table rows will be dynamically added here -->
             </tbody>
         </table>
     </div>
@@ -64,18 +64,17 @@
         <button class="btn btn-primary btn-lg col-md-12 mb-5" id="save">Save Search</button>
     </div>
 
-    <!-- Latest compiled and minified CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Latest compiled JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 
     <script>
+        //get json containing service data
         const jsonData = {{ data | tojson | safe }};
         
         const servicesTableBody = document.getElementById('servicesTableBody');
 
+        //get data for each row
         jsonData.services.forEach(service => {
             const row = document.createElement('tr');
 
@@ -125,10 +124,11 @@
             serviceTypeCell.textContent = service.serviceType;
             row.appendChild(serviceTypeCell);
         
-
+            //add row to table
             servicesTableBody.appendChild(row);
         });
 
+        //save search data
         document.getElementById("save").addEventListener("click", function() {
             var crs_1 = {{ station1 | tojson | safe }};
             var crs_2 = {{ station2 | tojson | safe}};
@@ -163,6 +163,7 @@
             window.open('/saved_stations', '_self');
         })
 
+        //find station name with code
         function findStationName(stationData, code) {
             const station = stationData.stations.find(station => station.crsCode === code);
             return station ? station.stationName : "Station Not Found";

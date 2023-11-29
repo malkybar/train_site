@@ -48,6 +48,7 @@
             </li>
         </ul>
         
+        <!-- arrivals and departures searches on seperate tabs -->
         <div class="tab-content mt-2">
             <div id="depart_tab" class="tab-pane fade show active">
                     
@@ -56,6 +57,7 @@
                 <div class="row mt-2">
                     <div class="col-md-6">
                         <h3>Depart From:</h3>
+                        <!-- get station names and codes from json file into select -->
                         <select id="dep_station" class="js-example-basic-single">
                             {% for station in data.stations %}
                                 <option value="{{ station.crsCode }}">{{ station.stationName }} {{ station.crsCode }}</option>
@@ -67,6 +69,7 @@
                         <h3>Calling At (Optional):</h3>
                         <select id="call_at" class="js-example-basic-single">
                             <option value="BLANK">BLANK</option>
+                            <!-- get station names and codes from json file into select -->
                             {% for station in data.stations %}
                                 <option value="{{ station.crsCode }}">{{ station.stationName }} {{ station.crsCode }}</option>
                             {% endfor %}
@@ -88,6 +91,7 @@
                     <div class="col-md-6">
                         <h3>Arrive At:</h3>
                         <select id="arr_station" class="js-example-basic-single">
+                            <!-- get station names and codes from json file into select -->
                             {% for station in data.stations %}
                                 <option value="{{ station.crsCode }}">{{ station.stationName }} {{ station.crsCode }}</option>
                             {% endfor %}
@@ -98,6 +102,7 @@
                         <h3>Arriving From (Optional):</h3>
                         <select id="arr_from" class="js-example-basic-single">
                             <option value="BLANK">BLANK</option>
+                            <!-- get station names and codes from json file into select -->
                             {% for station in data.stations %}
                                 <option value="{{ station.crsCode }}">{{ station.stationName }} {{ station.crsCode }}</option>
                             {% endfor %}
@@ -123,11 +128,13 @@
 
 
     <script>
+        //select2 function, allows user to search and select stations
         $(document).ready(function() {
             // Initialize Select2
             $('.js-example-basic-single').select2();
         });
 
+        //gets data from inputs and loads departures page
         $('#dep_button').on('click', function (){
             var dep = document.getElementById("dep_station");
             var call = document.getElementById("call_at");
@@ -138,6 +145,7 @@
             window.open(url, '_self');
         })
 
+        //gets data from inputs and loads arrivals page
         $('#arr_button').on('click', function (){
             var arr = document.getElementById("arr_station");
             var from = document.getElementById("arr_from");
