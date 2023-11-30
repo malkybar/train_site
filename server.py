@@ -22,6 +22,7 @@ def get_db():
           g.db = db
      return db
 
+#close connection to database
 @app.teardown_appcontext
 def close_db_connection(exception):
      db = getattr(g, 'db', None)
