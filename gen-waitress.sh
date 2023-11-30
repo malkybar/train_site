@@ -11,7 +11,7 @@ Type=simple
 User=root
 Group=root
 WorkingDirectory=/home/$USER/train_site
-ExecStart=/home/$USER/train_site/bin/waitress-serve --listen=127.0.0.1:5000 server_file_name:app 
+ExecStart=/home/$USER/train_site/env/bin/waitress-serve --listen=127.0.0.1:5000 server_file_name:app 
 Restart=always
 
 [Install]
